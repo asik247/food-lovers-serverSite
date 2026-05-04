@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config()
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const port = process.env.PORT || 3000;
 const app = express();
@@ -15,7 +16,7 @@ app.listen(port, () => {
     console.log(`This server ruining in port:${port}`);
 })
 //! mongodb uri code;
-const uri = "mongodb+srv://food-lovers-networked:oLFJDZyjwZzSgIGn@cluster0.fdzc9ua.mongodb.net/?appName=Cluster0";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.fdzc9ua.mongodb.net/?appName=Cluster0`;
 //! Create a MongoClient;
 const client = new MongoClient(uri, {
     serverApi: {
