@@ -40,7 +40,7 @@ async function run() {
         })
         //! get all products usign get method;
         app.get('/products', async (req, res) => {
-            const cursor = await myProducts.find();
+            const cursor = await myProducts.find().sort({rating:-1}).limit(6)
             const result = await cursor.toArray();
             res.send(result);
         })
@@ -61,5 +61,4 @@ async function run() {
 
     }
 }
-run().catch(console.dir);
 run().catch(console.dir);
