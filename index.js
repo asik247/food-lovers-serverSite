@@ -47,11 +47,13 @@ async function run() {
         //! get specifiqe product usign id;
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
             const query = { _id:id};
             const result = await myProducts.findOne(query);
-            console.log(result);
             res.send(result)
+        })
+        //!query using get data/email use and get data;
+        app.get('/products',(req,res)=>{
+            console.log(req.query.isAvailable);
         })
 
 
