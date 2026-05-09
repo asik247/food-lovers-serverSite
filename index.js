@@ -47,15 +47,21 @@ async function run() {
         //! get specifiqe product usign id;
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id:id};
+            const query = { _id: new ObjectId(id) };
             const result = await myProducts.findOne(query);
             res.send(result)
         })
         //!query using get data/email use and get data;
-        app.get('/products',(req,res)=>{
-            console.log(req.query.isAvailable);
-        })
+        app.get('/products', async (req, res) => {
 
+            const email = req.query.email
+
+            const query = { email: email }
+
+            const result = await myProducts.find(query).toArray()
+
+            res.send(result)
+        })
 
 
 
