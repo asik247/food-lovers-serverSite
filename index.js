@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 3000;
 const app = express();
 //Todo: middleware code;
@@ -40,9 +40,18 @@ async function run() {
         })
         //! get all products usign get method;
         app.get('/products', async (req, res) => {
-            const cursor = await myProducts.find().sort({rating:-1}).limit(6)
+            const cursor = await myProducts.find().sort({ rating: -1 }).limit(6)
             const result = await cursor.toArray();
             res.send(result);
+        })
+        //! get specifiqe product usign id;
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id:id};
+            const result = await myProducts.findOne(query);
+            console.log(result);
+            res.send(result)
         })
 
 
