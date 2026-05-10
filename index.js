@@ -61,9 +61,7 @@ async function run() {
         //! update using patch;
         app.patch('/products',async(req,res)=>{
             const id = req.params.id;
-            console.log(id);
-            const newInfo = req.body;
-            console.log(newInfo);
+            const newInfo = req.body
             const query = {_id: new ObjectId(id)};
             const updateUser = {
                 $set:{
@@ -75,11 +73,16 @@ async function run() {
             
         })
         //!query using get data/email use and get data;
-        app.get('/products', async (req, res) => {
+         app.get('/products', async (req, res) => {
             const email = req.query.email;
             console.log(email);
-            res.send(email)
-
+            const query = {};
+            if (email) {
+                query.email = email
+            }
+            const cursor = myProducts.find(query);
+            const result = await cursor.toArray();
+            res.send(result)
         })
 
 
