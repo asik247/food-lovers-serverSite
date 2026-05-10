@@ -51,9 +51,15 @@ async function run() {
             const result = await myProducts.findOne(query);
             res.send(result)
         })
+        //! delete using id;
+        app.delete('/products/:id',async(req,res)=>{
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await myProducts.deleteOne(query);
+            res.send(result)
+        })
         //!query using get data/email use and get data;
         app.get('/products', async (req, res) => {
-
             const email = req.query.email;
             console.log(email);
             res.send(email)
