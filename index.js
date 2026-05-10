@@ -32,6 +32,7 @@ async function run() {
         //! mydb & collection code;
         const myDB = client.db("food-lovers-networked");
         const myProducts = myDB.collection("products");
+        const totalReviews = myDB.collection("allReviews");
         //! products coll data post;
         app.post('/products', async (req, res) => {
             const allDatas = req.body;
@@ -39,11 +40,11 @@ async function run() {
             res.send(result)
         })
         //! get all products usign get method;
-        // app.get('/products', async (req, res) => {
-        //     const cursor = await myProducts.find().sort({ rating: -1 }).limit(6)
-        //     const result = await cursor.toArray();
-        //     res.send(result);
-        // })
+        app.get('/products', async (req, res) => {
+            const cursor = await myProducts.find().sort({ rating: -1 }).limit(6)
+            const result = await cursor.toArray();
+            res.send(result);
+        })
         //! get specifiqe product usign id;
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -80,6 +81,18 @@ async function run() {
                 {query.email =emails}
             }
             const cursor =  myProducts.find(query);
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+        //Todo: all reviews relaive apis hre;
+        app.post('/allReviews',async (req,res)=>{
+            const allData = req.body;
+            const result = await totalReviews.insertOne(allData)
+            res.send(result)
+        })
+        //?simple get method;
+        app.get('/allReviews',async (req,res)=>{
+            const cursor = await totalReviews.find();
             const result = await cursor.toArray();
             res.send(result)
         })
