@@ -58,6 +58,22 @@ async function run() {
             const result = await myProducts.deleteOne(query);
             res.send(result)
         })
+        //! update using patch;
+        app.patch('/products',async(req,res)=>{
+            const id = req.params.id;
+            console.log(id);
+            const newInfo = req.body;
+            console.log(newInfo);
+            const query = {_id: new ObjectId(id)};
+            const updateUser = {
+                $set:{
+                    price:newInfo.price
+                }
+            }
+            const result = await myProducts.updateOne(query,updateUser)
+            res.send(result)
+            
+        })
         //!query using get data/email use and get data;
         app.get('/products', async (req, res) => {
             const email = req.query.email;
