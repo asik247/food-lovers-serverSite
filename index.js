@@ -54,13 +54,10 @@ async function run() {
         //!query using get data/email use and get data;
         app.get('/products', async (req, res) => {
 
-            const email = req.query.email
+            const email = req.query.email;
+            console.log(email);
+            res.send(email)
 
-            const query = { email: email }
-
-            const result = await myProducts.find(query).toArray()
-
-            res.send(result)
         })
 
 
