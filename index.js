@@ -39,11 +39,11 @@ async function run() {
             res.send(result)
         })
         //! get all products usign get method;
-        app.get('/products', async (req, res) => {
-            const cursor = await myProducts.find().sort({ rating: -1 }).limit(6)
-            const result = await cursor.toArray();
-            res.send(result);
-        })
+        // app.get('/products', async (req, res) => {
+        //     const cursor = await myProducts.find().sort({ rating: -1 }).limit(6)
+        //     const result = await cursor.toArray();
+        //     res.send(result);
+        // })
         //! get specifiqe product usign id;
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -73,18 +73,16 @@ async function run() {
             
         })
         //!query using get data/email use and get data;
-         app.get('/products', async (req, res) => {
-            const email = req.query.email;
-            console.log(email);
+        app.get('/products',async (req,res)=>{
+            const emails = req.query.email
             const query = {};
-            if (email) {
-                query.email = email
+            if(emails){
+                {query.email =emails}
             }
-            const cursor = myProducts.find(query);
+            const cursor =  myProducts.find(query);
             const result = await cursor.toArray();
             res.send(result)
         })
-
 
 
 
