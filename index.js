@@ -87,12 +87,16 @@ async function run() {
         //Todo: all reviews relaive apis hre;
         app.post('/allReviews',async (req,res)=>{
             const allData = req.body;
+            console.log(allData);
             const result = await totalReviews.insertOne(allData)
             res.send(result)
         })
         //?simple get method;
-        app.get('/allReviews',async (req,res)=>{
-            const cursor = await totalReviews.find();
+        app.get('/allReviews/:id',async (req,res)=>{
+            const id = req.params.id;
+            console.log(id);
+            const query = {productId:id};
+            const cursor = await totalReviews.find(query);
             const result = await cursor.toArray();
             res.send(result)
         })
