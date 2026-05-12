@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+//?firebase admin;
+const admin = require("firebase-admin");
 const port = process.env.PORT || 3000;
 const app = express();
 //Todo: middleware code;
@@ -25,6 +27,32 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+//Todo:firebase relative;
+const serviceAccount = require("./food-lovers-network-key.json");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+//?Veryfiy firebase Token;
+const verifyFireBaseToken = async (req, res, next) => {
+    // console.log('Headder:-',req.headers);
+    const authorzed = req.headers.authorization;
+    if (!authorzed) {
+        return res.status(401).send({ message: 'unauthorized access' })
+    }
+    const token = authorzed.split(' ')[1]
+    // console.log(token);
+    if (!token) {
+        return res.status(401).send({ message: 'unauthorzed access' })
+    }
+    try {
+        const decoded = await admin.auth().verifyIdToken(token);
+        console.log(decoded);
+        next()
+    } catch {
+        return res.status(401).send({ message: 'unauthorzed access' })
+    }
+
+}
 //! mongodb run funk code;
 async function run() {
     try {
@@ -98,7 +126,8 @@ async function run() {
             res.send(result)
         })
         //?id usign get;
-        app.get('/allReviews/:id', async (req, res) => {
+        app.get('/allReviews/:id', verifyFireBaseToken, async (req, res) => {
+            // console.log('headder',req.headers.authorization);
             const id = req.params.id;
             console.log(id);
             const query = { productId: id };
