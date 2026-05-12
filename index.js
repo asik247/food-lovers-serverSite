@@ -53,53 +53,67 @@ async function run() {
             res.send(result)
         })
         //! delete using id;
-        app.delete('/products/:id',async(req,res)=>{
+        app.delete('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await myProducts.deleteOne(query);
             res.send(result)
         })
         //! update using patch;
-        app.patch('/products',async(req,res)=>{
+        app.patch('/products', async (req, res) => {
             const id = req.params.id;
             const newInfo = req.body
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const updateUser = {
-                $set:{
-                    price:newInfo.price
+                $set: {
+                    price: newInfo.price
                 }
             }
-            const result = await myProducts.updateOne(query,updateUser)
+            const result = await myProducts.updateOne(query, updateUser)
             res.send(result)
-            
+
         })
         //!query using get data/email use and get data;
-        app.get('/products',async (req,res)=>{
+        app.get('/products', async (req, res) => {
             const emails = req.query.email
             const query = {};
-            if(emails){
-                {query.email =emails}
+            if (emails) {
+                { query.email = emails }
             }
-            const cursor =  myProducts.find(query);
+            const cursor = myProducts.find(query);
             const result = await cursor.toArray();
             res.send(result)
         })
         //Todo: all reviews relaive apis hre;
-        app.post('/allReviews',async (req,res)=>{
+        app.post('/allReviews', async (req, res) => {
             const allData = req.body;
             console.log(allData);
             const result = await totalReviews.insertOne(allData)
             res.send(result)
         })
         //?simple get method;
-        app.get('/allReviews/:id',async (req,res)=>{
+        app.get('/allReviews', async (req, res) => {
+            const cursor = await totalReviews.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+        //?id usign get;
+        app.get('/allReviews/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
-            const query = {productId:id};
+            const query = { productId: id };
             const cursor = await totalReviews.find(query);
             const result = await cursor.toArray();
             res.send(result)
         })
+        //?Remove review;
+        app.delete('/allReviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await totalReviews.deleteOne(query);
+            res.send(result);
+        });
+
 
 
 
