@@ -120,12 +120,6 @@ async function run() {
             const result = await totalReviews.insertOne(allData)
             res.send(result)
         })
-        //?simple get method allReviews;
-        // app.get('/allReviews', async (req, res) => {
-        //     const cursor = await totalReviews.find();
-        //     const result = await cursor.toArray();
-        //     res.send(result)
-        // })
         //?id usign get;
         app.get('/allReviews/:id', verifyFireBaseToken, async (req, res) => {
             // console.log('headder',req.headers.authorization);
@@ -143,8 +137,14 @@ async function run() {
             const result = await totalReviews.deleteOne(query);
             res.send(result);
         });
+          //?simple get method allReviews;
+        app.get('/allReviews', async (req, res) => {
+            const cursor = await totalReviews.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
         //?Query get allReviews;
-        app.get('/allReviews', verifyFireBaseToken, async (req, res) => {
+        app.get('/myReviews', verifyFireBaseToken, async (req, res) => {
             // console.log('valid',req.validEmail);
             const em = req.query.email;
             // console.log('email',em);
@@ -160,6 +160,8 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         });
+      
+       
 
 
 
