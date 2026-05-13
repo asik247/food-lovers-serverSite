@@ -46,7 +46,7 @@ const verifyFireBaseToken = async (req, res, next) => {
     }
     try {
         const decoded = await admin.auth().verifyIdToken(token);
-        console.log(decoded);
+        // console.log(decoded);
         next()
     } catch {
         return res.status(401).send({ message: 'unauthorzed access' })
@@ -115,11 +115,11 @@ async function run() {
         //Todo: all reviews relaive apis hre;
         app.post('/allReviews', async (req, res) => {
             const allData = req.body;
-            console.log(allData);
+            // console.log(allData);
             const result = await totalReviews.insertOne(allData)
             res.send(result)
         })
-        //?simple get method;
+        //?simple get method allReviews;
         app.get('/allReviews', async (req, res) => {
             const cursor = await totalReviews.find();
             const result = await cursor.toArray();
@@ -129,7 +129,7 @@ async function run() {
         app.get('/allReviews/:id', verifyFireBaseToken, async (req, res) => {
             // console.log('headder',req.headers.authorization);
             const id = req.params.id;
-            console.log(id);
+            // console.log(id);
             const query = { productId: id };
             const cursor = await totalReviews.find(query);
             const result = await cursor.toArray();
@@ -142,6 +142,22 @@ async function run() {
             const result = await totalReviews.deleteOne(query);
             res.send(result);
         });
+        //?Query get allReviews;
+        // app.get('/allReviews', async (req, res) => {
+        //     const em = req.query.email;
+        //     console.log(em);
+
+        //     const query = {};
+
+        //     if (em) {
+        //         query.foodEmail = em;
+        //     }
+
+        //     const cursor = totalReviews.find(query);
+        //     const result = await cursor.toArray();
+
+        //     res.send(result);
+        // });
 
 
 
