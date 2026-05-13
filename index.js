@@ -47,6 +47,7 @@ const verifyFireBaseToken = async (req, res, next) => {
     try {
         const decoded = await admin.auth().verifyIdToken(token);
         // console.log(decoded);
+        req.validEmail = decoded.email;
         next()
     } catch {
         return res.status(401).send({ message: 'unauthorzed access' })
@@ -120,11 +121,11 @@ async function run() {
             res.send(result)
         })
         //?simple get method allReviews;
-        app.get('/allReviews', async (req, res) => {
-            const cursor = await totalReviews.find();
-            const result = await cursor.toArray();
-            res.send(result)
-        })
+        // app.get('/allReviews', async (req, res) => {
+        //     const cursor = await totalReviews.find();
+        //     const result = await cursor.toArray();
+        //     res.send(result)
+        // })
         //?id usign get;
         app.get('/allReviews/:id', verifyFireBaseToken, async (req, res) => {
             // console.log('headder',req.headers.authorization);
@@ -143,21 +144,22 @@ async function run() {
             res.send(result);
         });
         //?Query get allReviews;
-        // app.get('/allReviews', async (req, res) => {
-        //     const em = req.query.email;
-        //     console.log(em);
-
-        //     const query = {};
-
-        //     if (em) {
-        //         query.foodEmail = em;
-        //     }
-
-        //     const cursor = totalReviews.find(query);
-        //     const result = await cursor.toArray();
-
-        //     res.send(result);
-        // });
+        app.get('/allReviews', verifyFireBaseToken, async (req, res) => {
+            // console.log('valid',req.validEmail);
+            const em = req.query.email;
+            // console.log('email',em);
+            // console.log(em);
+            if (req.validEmail !== em) {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
+            const query = {};
+            if (em) {
+                query.foodEmail = em;
+            }
+            const cursor = totalReviews.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
 
 
 
