@@ -33,26 +33,43 @@ admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 //?Veryfiy firebase Token;
-const verifyFireBaseToken = async (req, res, next) => {
-    // console.log('Headder:-',req.headers);
-    const authorzed = req.headers.authorization;
-    if (!authorzed) {
-        return res.status(401).send({ message: 'unauthorized access' })
+// const verifyFireBaseToken = async (req, res, next) => {
+//     // console.log('Headder:-',req.headers);
+//     const authorzed = req.headers.authorization;
+//     if (!authorzed) {
+//         return res.status(401).send({ message: 'unauthorized access' })
+//     }
+//     const token = authorzed.split(' ')[1]
+//     // console.log(token);
+//     if (!token) {
+//         return res.status(401).send({ message: 'unauthorzed access' })
+//     }
+//     try {
+//         const decoded = await admin.auth().verifyIdToken(token);
+//         // console.log(decoded);
+//         req.validEmail = decoded.email;
+//         next()
+//     } catch {
+//         return res.status(401).send({ message: 'unauthorzed access' })
+//     }
+
+// }
+//?VEryfi Firebase Token2;
+const verifyFireBaseToken2 = async (req,res,next) =>{
+    const authorized = req.headers.authorization;
+    if(!authorized){
+        return res.status(401).send({message:'unauthorization access'})
     }
-    const token = authorzed.split(' ')[1]
-    // console.log(token);
-    if (!token) {
-        return res.status(401).send({ message: 'unauthorzed access' })
-    }
-    try {
+    const token = authorized.split(' ')[1];
+    try{
         const decoded = await admin.auth().verifyIdToken(token);
         // console.log(decoded);
-        req.validEmail = decoded.email;
+        req.validEmail = decoded.email
         next()
-    } catch {
+    }
+    catch{
         return res.status(401).send({ message: 'unauthorzed access' })
     }
-
 }
 //! mongodb run funk code;
 async function run() {
@@ -121,7 +138,7 @@ async function run() {
             res.send(result)
         })
         //?id usign get;
-        app.get('/allReviews/:id', verifyFireBaseToken, async (req, res) => {
+        app.get('/allReviews/:id', verifyFireBaseToken2, async (req, res) => {
             // console.log('headder',req.headers.authorization);
             const id = req.params.id;
             // console.log(id);
@@ -144,7 +161,8 @@ async function run() {
             res.send(result)
         })
         //?Query get allReviews;
-        app.get('/myReviews', verifyFireBaseToken, async (req, res) => {
+        app.get('/myReviews', verifyFireBaseToken2, async (req, res) => {
+            // console.log('authorization',req.headers);
             // console.log('valid',req.validEmail);
             const em = req.query.email;
             // console.log('email',em);
