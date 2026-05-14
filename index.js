@@ -156,7 +156,7 @@ async function run() {
         });
           //?simple get method allReviews;
         app.get('/allReviews', async (req, res) => {
-            const cursor = await totalReviews.find();
+            const cursor = await totalReviews.find().sort({createdAT:-1})
             const result = await cursor.toArray();
             res.send(result)
         })
@@ -174,7 +174,7 @@ async function run() {
             if (em) {
                 query.foodEmail = em;
             }
-            const cursor = totalReviews.find(query);
+            const cursor = totalReviews.find(query).sort({createdAT:-1})
             const result = await cursor.toArray();
             res.send(result);
         });
