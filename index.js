@@ -210,7 +210,7 @@ async function run() {
             res.send(result)
         })
         //?Query get allReviews in jwt verfiy token✔️✔️
-        app.get('/myReviews', jwtTokenVerify, async (req, res) => {
+        app.get('/myReviews', verifyFireBaseToken2, async (req, res) => {
             // console.log('authorization',req.headers);
             // console.log('valid',req.validEmail);
             // console.log('jwt token',req.headers.authorization);
@@ -218,7 +218,7 @@ async function run() {
             // console.log('email',em);
             // console.log(req.tokenEmail);
             // console.log(em);
-            if (req.tokenEmail !== em) {
+            if (req.validEmail !== em) {
                 return res.status(403).send({ message: 'forbidden access' });
             }
             const query = {};
