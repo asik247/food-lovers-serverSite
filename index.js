@@ -55,19 +55,19 @@ admin.initializeApp({
 
 // }
 //?VEryfi Firebase Token2;
-const verifyFireBaseToken2 = async (req,res,next) =>{
+const verifyFireBaseToken2 = async (req, res, next) => {
     const authorized = req.headers.authorization;
-    if(!authorized){
-        return res.status(401).send({message:'unauthorization access'})
+    if (!authorized) {
+        return res.status(401).send({ message: 'unauthorization access' })
     }
     const token = authorized.split(' ')[1];
-    try{
+    try {
         const decoded = await admin.auth().verifyIdToken(token);
         // console.log(decoded);
         req.validEmail = decoded.email
         next()
     }
-    catch{
+    catch {
         return res.status(401).send({ message: 'unauthorzed access' })
     }
 }
@@ -81,7 +81,7 @@ async function run() {
         const totalReviews = myDB.collection("allReviews");
         const createNewFoods = myDB.collection("creatNewFood");
         //? creatNewFood post db data;
-        app.post('/creatNewFood',verifyFireBaseToken2,async (req,res)=>{
+        app.post('/creatNewFood', verifyFireBaseToken2, async (req, res) => {
             const newData = req.body;
             const result = await createNewFoods.insertOne(newData);
             res.send(result)
@@ -147,7 +147,7 @@ async function run() {
             res.send(result)
         })
         //?id usign get;
-        app.get('/allReviews/:id', verifyFireBaseToken2, async (req, res) => {
+        app.get('/allReviews/:id',verifyFireBaseToken2, async (req, res) => {
             // console.log('headder',req.headers.authorization);
             const id = req.params.id;
             // console.log(id);
@@ -163,9 +163,24 @@ async function run() {
             const result = await totalReviews.deleteOne(query);
             res.send(result);
         });
-          //?simple get method allReviews;
+        //?Update MyREviews;
+        app.patch('/allReviews/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log('client side id:',id);
+            const updateData = req.body;
+            const query = { _id:new ObjectId(id) };
+            const updateNewFood = {
+                $set: {
+                    addReview: updateData.addReview
+                }
+            }
+            const result = await totalReviews.updateOne(query,updateNewFood);
+            res.send(result)
+
+        })
+        //?simple get method allReviews;
         app.get('/allReviews', async (req, res) => {
-            const cursor = await totalReviews.find().sort({createdAT:-1})
+            const cursor = await totalReviews.find().sort({ createdAT: -1 })
             const result = await cursor.toArray();
             res.send(result)
         })
@@ -183,12 +198,12 @@ async function run() {
             if (em) {
                 query.foodEmail = em;
             }
-            const cursor = totalReviews.find(query).sort({createdAT:-1})
+            const cursor = totalReviews.find(query).sort({ createdAT: -1 })
             const result = await cursor.toArray();
             res.send(result);
         });
-      
-       
+
+
 
 
 
