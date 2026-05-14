@@ -4,6 +4,8 @@ require('dotenv').config()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 //?firebase admin;
 const admin = require("firebase-admin");
+//!JWT admin✔️✔️
+const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 3000;
 const app = express();
 //Todo: middleware code;
@@ -71,6 +73,23 @@ const verifyFireBaseToken2 = async (req, res, next) => {
         return res.status(401).send({ message: 'unauthorzed access' })
     }
 }
+//? JWT Token Verify code here✔️✔️
+const jwtTokenVerify = async (req,res,next) =>{
+    // console.log('jwt token in verfify code',req.headers.authorization);
+    const author = req.headers.authorization;
+    if(!author){
+        return res.status(401).send({message:'unauthorized access'})
+    }
+    const token = author.split(' ')[1]
+    // console.log('token here',token);
+    jwt.verify(token,process.env.JWT_SECURITE,(error,decoded)=>{
+        if (error) {
+            return res.status(401).send({ message: 'unauthorized access' })
+        }
+        req.tokenEmail= decoded.email
+        next()
+    })
+}
 //! mongodb run funk code;
 async function run() {
     try {
@@ -80,6 +99,12 @@ async function run() {
         const myProducts = myDB.collection("products");
         const totalReviews = myDB.collection("allReviews");
         const createNewFoods = myDB.collection("creatNewFood");
+        //Todo:JWTToken generate apis✔️✔️
+        app.post('/getJWTToken', (req,res)=>{
+            const email = req.body;
+            const token = jwt.sign(email,process.env.JWT_SECURITE,{expiresIn:'1h'})
+            res.send({token:token})
+        })
         //? creatNewFood post db data;
         app.post('/creatNewFood', verifyFireBaseToken2, async (req, res) => {
             const newData = req.body;
@@ -184,14 +209,16 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
-        //?Query get allReviews;
-        app.get('/myReviews', verifyFireBaseToken2, async (req, res) => {
+        //?Query get allReviews in jwt verfiy token✔️✔️
+        app.get('/myReviews', jwtTokenVerify, async (req, res) => {
             // console.log('authorization',req.headers);
             // console.log('valid',req.validEmail);
+            // console.log('jwt token',req.headers.authorization);
             const em = req.query.email;
             // console.log('email',em);
+            // console.log(req.tokenEmail);
             // console.log(em);
-            if (req.validEmail !== em) {
+            if (req.tokenEmail !== em) {
                 return res.status(403).send({ message: 'forbidden access' });
             }
             const query = {};
