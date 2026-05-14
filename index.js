@@ -79,6 +79,15 @@ async function run() {
         const myDB = client.db("food-lovers-networked");
         const myProducts = myDB.collection("products");
         const totalReviews = myDB.collection("allReviews");
+        const createNewFoods = myDB.collection("creatNewFood");
+        //? creatNewFood post db data;
+        app.post('/creatNewFood',verifyFireBaseToken2,async (req,res)=>{
+            const newData = req.body;
+            const result = await createNewFoods.insertOne(newData);
+            res.send(result)
+            // console.log(req.headers.authorization);
+            // console.log(newData);
+        })
         //! products coll data post;
         app.post('/products', async (req, res) => {
             const allDatas = req.body;
