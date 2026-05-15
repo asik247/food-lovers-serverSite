@@ -99,11 +99,27 @@ async function run() {
         const myProducts = myDB.collection("products");
         const totalReviews = myDB.collection("allReviews");
         const createNewFoods = myDB.collection("creatNewFood");
+        const allFevoritesReviews = myDB.collection("favoritesReviewsColl")
         //Todo:JWTToken generate apis✔️✔️
         app.post('/getJWTToken', (req,res)=>{
             const email = req.body;
             const token = jwt.sign(email,process.env.JWT_SECURITE,{expiresIn:'1h'})
             res.send({token:token})
+        })
+        //!favoritesReviews post in db;
+        app.post('/favoritesReviewsColl',async(req,res)=>{
+            // console.log(req.body);
+            const allReviews = req.body;
+            const result = await allFevoritesReviews.insertOne(allReviews)
+            res.send(result)
+
+        })
+        //!favoritesReviews get in db;
+        app.get('/favoritesReviewColl',async(req,res)=>{
+            // const favReview = req.body;
+            const cursor = await allFevoritesReviews.find();
+            const result = await cursor.toArray();
+            res.send(result)
         })
         //? creatNewFood post db data;
         app.post('/creatNewFood', verifyFireBaseToken2, async (req, res) => {
