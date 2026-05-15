@@ -123,7 +123,7 @@ async function run() {
             if(emailQuery){
                 query.userEmail = emailQuery
             }
-            const cursor = allFevoritesReviews.find(query);
+            const cursor = allFevoritesReviews.find(query).sort({addedAt:-1})
             const result = await cursor.toArray();
             res.send(result)
         })
