@@ -115,13 +115,18 @@ async function run() {
 
         })
          //!favoritesReviews get in db;
+         //!favoritesReviews get query using email;
         app.get('/favoritesReviewsColl',async (req,res)=>{
-            const cursor = allFevoritesReviews.find();
+            const emailQuery = req.query.email;
+            console.log(emailQuery);
+            const query = {};
+            if(emailQuery){
+                query.userEmail = emailQuery
+            }
+            const cursor = allFevoritesReviews.find(query);
             const result = await cursor.toArray();
             res.send(result)
         })
-         //!favoritesReviews get query using email;
-         
         //? creatNewFood post db data;
         app.post('/creatNewFood', verifyFireBaseToken2, async (req, res) => {
             const newData = req.body;
