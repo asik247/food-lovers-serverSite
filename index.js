@@ -74,19 +74,19 @@ const verifyFireBaseToken2 = async (req, res, next) => {
     }
 }
 //? JWT Token Verify code here✔️✔️
-const jwtTokenVerify = async (req,res,next) =>{
+const jwtTokenVerify = async (req, res, next) => {
     // console.log('jwt token in verfify code',req.headers.authorization);
     const author = req.headers.authorization;
-    if(!author){
-        return res.status(401).send({message:'unauthorized access'})
+    if (!author) {
+        return res.status(401).send({ message: 'unauthorized access' })
     }
     const token = author.split(' ')[1]
     // console.log('token here',token);
-    jwt.verify(token,process.env.JWT_SECURITE,(error,decoded)=>{
+    jwt.verify(token, process.env.JWT_SECURITE, (error, decoded) => {
         if (error) {
             return res.status(401).send({ message: 'unauthorized access' })
         }
-        req.tokenEmail= decoded.email
+        req.tokenEmail = decoded.email
         next()
     })
 }
@@ -101,26 +101,27 @@ async function run() {
         const createNewFoods = myDB.collection("creatNewFood");
         const allFevoritesReviews = myDB.collection("favoritesReviewsColl")
         //Todo:JWTToken generate apis✔️✔️
-        app.post('/getJWTToken', (req,res)=>{
+        app.post('/getJWTToken', (req, res) => {
             const email = req.body;
-            const token = jwt.sign(email,process.env.JWT_SECURITE,{expiresIn:'1h'})
-            res.send({token:token})
+            const token = jwt.sign(email, process.env.JWT_SECURITE, { expiresIn: '1h' })
+            res.send({ token: token })
         })
         //!favoritesReviews post in db;
-        app.post('/favoritesReviewsColl',async(req,res)=>{
+        app.post('/favoritesReviewsColl', async (req, res) => {
             // console.log(req.body);
             const allReviews = req.body;
             const result = await allFevoritesReviews.insertOne(allReviews)
             res.send(result)
 
         })
-        //!favoritesReviews get in db;
-        app.get('/favoritesReviewColl',async(req,res)=>{
-            // const favReview = req.body;
-            const cursor = await allFevoritesReviews.find();
+         //!favoritesReviews get in db;
+        app.get('/favoritesReviewsColl',async (req,res)=>{
+            const cursor = allFevoritesReviews.find();
             const result = await cursor.toArray();
             res.send(result)
         })
+         //!favoritesReviews get query using email;
+         
         //? creatNewFood post db data;
         app.post('/creatNewFood', verifyFireBaseToken2, async (req, res) => {
             const newData = req.body;
@@ -188,7 +189,7 @@ async function run() {
             res.send(result)
         })
         //?id usign get;
-        app.get('/allReviews/:id',verifyFireBaseToken2, async (req, res) => {
+        app.get('/allReviews/:id', verifyFireBaseToken2, async (req, res) => {
             // console.log('headder',req.headers.authorization);
             const id = req.params.id;
             // console.log(id);
@@ -207,15 +208,15 @@ async function run() {
         //?Update MyREviews;
         app.patch('/allReviews/:id', async (req, res) => {
             const id = req.params.id;
-            console.log('client side id:',id);
+            console.log('client side id:', id);
             const updateData = req.body;
-            const query = { _id:new ObjectId(id) };
+            const query = { _id: new ObjectId(id) };
             const updateNewFood = {
                 $set: {
                     addReview: updateData.addReview
                 }
             }
-            const result = await totalReviews.updateOne(query,updateNewFood);
+            const result = await totalReviews.updateOne(query, updateNewFood);
             res.send(result)
 
         })
