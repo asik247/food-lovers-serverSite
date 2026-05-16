@@ -142,11 +142,11 @@ async function run() {
             res.send(result)
         })
         //! get all products usign get method;
-        app.get('/products', async (req, res) => {
-            const cursor = await myProducts.find().sort({ rating: -1 }).limit(6)
-            const result = await cursor.toArray();
-            res.send(result);
-        })
+        // app.get('/products', async (req, res) => {
+        //     const cursor = await myProducts.find()
+        //     const result = await cursor.toArray();
+        //     res.send(result);
+        // })
         //! get specifiqe product usign id;
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -182,7 +182,7 @@ async function run() {
             if (emails) {
                 { query.email = emails }
             }
-            const cursor = myProducts.find(query);
+            const cursor = myProducts.find(query).sort({ rating: -1 }).limit(6)
             const result = await cursor.toArray();
             res.send(result)
         })
@@ -233,13 +233,7 @@ async function run() {
         })
         //?Query get allReviews in jwt verfiy token✔️✔️
         app.get('/myReviews', verifyFireBaseToken2, async (req, res) => {
-            // console.log('authorization',req.headers);
-            // console.log('valid',req.validEmail);
-            // console.log('jwt token',req.headers.authorization);
             const em = req.query.email;
-            // console.log('email',em);
-            // console.log(req.tokenEmail);
-            // console.log(em);
             if (req.validEmail !== em) {
                 return res.status(403).send({ message: 'forbidden access' });
             }
