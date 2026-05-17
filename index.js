@@ -127,6 +127,11 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
+        //?favoritesReviews delete;
+        app.delete('/favoritesReviewsColl/:id',async (req,res)=>{
+            const id = req.params.id;
+            console.log(id);
+        })
         //? creatNewFood post db data;
         app.post('/creatNewFood', verifyFireBaseToken2, async (req, res) => {
             const newData = req.body;
