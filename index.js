@@ -134,6 +134,7 @@ async function run() {
             const result = await allFevoritesReviews.deleteOne(query);
             res.send(result);
             // console.log(id);
+            console.log(id);
 
         })
         //? creatNewFood post db data;
