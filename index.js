@@ -118,10 +118,18 @@ async function run() {
          //!favoritesReviews get query using email;
         app.get('/favoritesReviewsColl',async (req,res)=>{
             const emailQuery = req.query.email;
-            console.log(emailQuery);
+            const search = req.query.search;
+            // console.log(req.query.search);
+            // console.log(emailQuery);
             const query = {};
             if(emailQuery){
                 query.userEmail = emailQuery
+            }
+            if(search){
+                query.foodName = {
+                    $regex:search,
+                    $options:'i'
+                }
             }
             const cursor = allFevoritesReviews.find(query).sort({addedAt:-1})
             const result = await cursor.toArray();
